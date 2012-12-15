@@ -1,6 +1,7 @@
 package br.ufpb.esa.project.scrum.controller;
 
 import java.util.Calendar;
+import java.util.Collection;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -33,7 +34,160 @@ public class UsuarioController {
 		manager.close();
 		factory.close();
 	}
+	
+	public Usuario readUsuarioById(Long id) {
+		EntityManagerFactory factory = Persistence.createEntityManagerFactory("esa_project_scrum_pu");
+		EntityManager manager = factory.createEntityManager();
 
+		CriteriaBuilder cb = manager.getCriteriaBuilder();
+		CriteriaQuery<Usuario> cq = cb.createQuery(Usuario.class);
+		Root<Usuario> u = cq.from(Usuario.class);
+		cq.select(u);
+
+		Predicate predicate = cb.equal(u.get("id"), id);
+		cq.where(predicate);
+
+		TypedQuery<Usuario> query = manager.createQuery(cq);
+		Usuario usuario = query.getSingleResult();
+
+		manager.close();
+		factory.close();
+
+		return usuario;
+	}
+	
+	public Usuario readUsuarioByEmail(String email) {
+		EntityManagerFactory factory = Persistence.createEntityManagerFactory("esa_project_scrum_pu");
+		EntityManager manager = factory.createEntityManager();
+
+		CriteriaBuilder cb = manager.getCriteriaBuilder();
+		CriteriaQuery<Usuario> cq = cb.createQuery(Usuario.class);
+		Root<Usuario> u = cq.from(Usuario.class);
+		cq.select(u);
+
+		Predicate predicate = cb.equal(u.get("email"), email);
+		cq.where(predicate);
+
+		TypedQuery<Usuario> query = manager.createQuery(cq);
+		Usuario usuario = query.getSingleResult();
+
+		manager.close();
+		factory.close();
+
+		return usuario;
+	}
+	
+	public Usuario readUsuarioByLogin(String login) {
+		EntityManagerFactory factory = Persistence.createEntityManagerFactory("esa_project_scrum_pu");
+		EntityManager manager = factory.createEntityManager();
+
+		CriteriaBuilder cb = manager.getCriteriaBuilder();
+		CriteriaQuery<Usuario> cq = cb.createQuery(Usuario.class);
+		Root<Usuario> u = cq.from(Usuario.class);
+		cq.select(u);
+
+		Predicate predicate = cb.equal(u.get("login"), login);
+		cq.where(predicate);
+
+		TypedQuery<Usuario> query = manager.createQuery(cq);
+		Usuario usuario = query.getSingleResult();
+
+		manager.close();
+		factory.close();
+
+		return usuario;
+	}
+
+	public Collection<Usuario> getUsuarios() {
+		EntityManagerFactory factory = Persistence.createEntityManagerFactory("esa_project_scrum_pu");
+		EntityManager manager = factory.createEntityManager();
+
+		CriteriaBuilder cb = manager.getCriteriaBuilder();
+		CriteriaQuery<Usuario> cq = cb.createQuery(Usuario.class);
+		Root<Usuario> u = cq.from(Usuario.class);
+		cq.select(u);
+
+		TypedQuery<Usuario> query = manager.createQuery(cq);
+		Collection<Usuario> usuarios = query.getResultList();
+
+		manager.close();
+		factory.close();
+
+		return usuarios;
+	}
+	
+	public void deleteUsuarioById(Long id) {
+		EntityManagerFactory factory = Persistence.createEntityManagerFactory("esa_project_scrum_pu");
+		EntityManager manager = factory.createEntityManager();
+
+		manager.getTransaction().begin();
+		
+		CriteriaBuilder cb = manager.getCriteriaBuilder();
+		CriteriaQuery<Usuario> cq = cb.createQuery(Usuario.class);
+		Root<Usuario> u = cq.from(Usuario.class);
+		cq.select(u);
+
+		Predicate predicate = cb.equal(u.get("id"), id);
+		cq.where(predicate);
+
+		TypedQuery<Usuario> query = manager.createQuery(cq);
+		Usuario usuario = query.getSingleResult();
+		
+		manager.remove(usuario);
+		manager.getTransaction().commit();
+
+		manager.close();
+		factory.close();
+	}
+	
+	public void deleteUsuarioByEmail(String email) {
+		EntityManagerFactory factory = Persistence.createEntityManagerFactory("esa_project_scrum_pu");
+		EntityManager manager = factory.createEntityManager();
+
+		manager.getTransaction().begin();
+		
+		CriteriaBuilder cb = manager.getCriteriaBuilder();
+		CriteriaQuery<Usuario> cq = cb.createQuery(Usuario.class);
+		Root<Usuario> u = cq.from(Usuario.class);
+		cq.select(u);
+
+		Predicate predicate = cb.equal(u.get("email"), email);
+		cq.where(predicate);
+
+		TypedQuery<Usuario> query = manager.createQuery(cq);
+		Usuario usuario = query.getSingleResult();
+		
+		manager.remove(usuario);
+		manager.getTransaction().commit();
+
+		manager.close();
+		factory.close();
+	}
+	
+	public void deleteUsuarioByLogin(String login) {
+		EntityManagerFactory factory = Persistence.createEntityManagerFactory("esa_project_scrum_pu");
+		EntityManager manager = factory.createEntityManager();
+
+		manager.getTransaction().begin();
+		
+		CriteriaBuilder cb = manager.getCriteriaBuilder();
+		CriteriaQuery<Usuario> cq = cb.createQuery(Usuario.class);
+		Root<Usuario> u = cq.from(Usuario.class);
+		cq.select(u);
+
+		Predicate predicate = cb.equal(u.get("login"), login);
+		cq.where(predicate);
+
+		TypedQuery<Usuario> query = manager.createQuery(cq);
+		Usuario usuario = query.getSingleResult();
+		
+		manager.remove(usuario);
+		manager.getTransaction().commit();
+
+		manager.close();
+		factory.close();
+	}
+	
 	public Usuario login(String login, String senha) {
 		EntityManagerFactory factory = Persistence.createEntityManagerFactory("esa_project_scrum_pu");
 		EntityManager manager = factory.createEntityManager();
