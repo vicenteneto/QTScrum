@@ -2,5 +2,6 @@
 WebContent/WEB-INF/classes/
 .metadata
 target/
+build/
 .DS_Store
 bin
