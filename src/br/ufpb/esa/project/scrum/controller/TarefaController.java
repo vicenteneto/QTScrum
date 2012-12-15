@@ -16,7 +16,7 @@ import br.ufpb.esa.project.scrum.model.Status;
 import br.ufpb.esa.project.scrum.model.Tarefa;
 
 public class TarefaController {
-	public void createTarefa(String descricao, Calendar vencimento) {
+	public void createTarefa(String descricao, Calendar vencimento, Status status) {
 		EntityManagerFactory factory = Persistence.createEntityManagerFactory("esa_project_scrum_pu");
 		EntityManager manager = factory.createEntityManager();
 
@@ -25,6 +25,7 @@ public class TarefaController {
 		Tarefa tarefa = new Tarefa();
 		tarefa.setDescricao(descricao);
 		tarefa.setVencimento(vencimento);
+		tarefa.setStatus(status);
 		manager.persist(tarefa);
 
 		manager.getTransaction().commit();
