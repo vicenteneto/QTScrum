@@ -1,0 +1,74 @@
+#rodape {
+	position: relative;
+	margin-top: -40px;
+	/* Este margin, tem que ser o mesmo valor da altura do rodapé, só que negativo */
+	height: 40px; /* E aqui, fica a altura do rodapé */
+	clear: both;
+	color: rgb(51, 153, 204);
+	text-align: center;
+}
+
+#conteudo {
+	margin-top: 60px;
+	height: 505px;
+}
+
+#div1 {
+	position: absolute;
+	margin-top: 5%;
+	margin-left: 20%;
+}
+
+#div2 {
+	position: absolute;
+	margin-top: 5%;
+	margin-left: 5%;
+}
+
+#div3 {
+	position: absolute;
+	margin-top: 5%;
+	margin-left: -1%;
+	margin-right: -1%;
+}
+
+.span4Style {
+	background: rgb(249, 249, 249);
+	border: solid;
+	border-color: rgb(234, 234, 234);
+	border-radius: 4px;
+	width: 400px;
+}
+
+html {
+	background: rgb(238, 238, 238);
+}
+
+thead {
+	background: rgb(248, 231, 163);
+}
+
+tfoot {
+	background: rgb(238, 238, 238);
+}
+
+legend, h2, h4 {
+	color: rgb(51, 102, 153);
+	font-family: 'Lucida Sans Unicode', 'Lucida Grande', sans-serif
+}
+
+label.error {
+	color: rgb(255, 255, 255);
+	font-style: oblique;
+	background: rgb(206, 130, 156);
+	filter: alpha(opacity =       50);
+	-moz-opacity: 0.5;
+	-khtml-opacity: 0.5;
+	opacity: 0.5;
+	border-radius: 6px;
+	width: 290px;
+	height: 35px;
+	text-align: center;
+	margin-top: 3px;
+	line-height: 33px;
+}
