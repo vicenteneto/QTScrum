@@ -1,15 +1,14 @@
 package br.ufpb.esa.project.scrum.model;
 
-import java.util.Calendar;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+import javax.persistence.ManyToOne;
+
+import org.hibernate.annotations.Cascade;
 
 @Entity
 public class Task {
@@ -17,14 +16,19 @@ public class Task {
 	@GeneratedValue
 	private Long id;
 
-	@Column(nullable=false)
+	@Column(nullable=false, length=255)
 	private String description;
-	
-	@Temporal(TemporalType.DATE)
-	private Calendar expiration;
 	
 	@Enumerated(EnumType.STRING)
 	private Status status;
+	
+	@ManyToOne
+	@Cascade(org.hibernate.annotations.CascadeType.SAVE_UPDATE)
+	private Project project;
+	
+	@ManyToOne
+	@Cascade(org.hibernate.annotations.CascadeType.SAVE_UPDATE)
+	private User responsible;
 	
 	public Long getId() {
 		return id;
@@ -38,16 +42,22 @@ public class Task {
 	public void setDescription(String description) {
 		this.description = description;
 	}
-	public Calendar getExpiration() {
-		return expiration;
-	}
-	public void setExpiration(Calendar expiration) {
-		this.expiration = expiration;
-	}
 	public Status getStatus() {
 		return status;
 	}
 	public void setStatus(Status status) {
 		this.status = status;
+	}
+	public Project getProject() {
+		return project;
+	}
+	public void setProject(Project project) {
+		this.project = project;
+	}
+	public User getResponsible() {
+		return responsible;
+	}
+	public void setResponsible(User responsible) {
+		this.responsible = responsible;
 	}
 }

@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.hibernate.Session;
 import org.hibernate.Transaction;
-import org.hibernate.criterion.Restrictions;
 
 import br.com.caelum.vraptor.ioc.Component;
 import br.ufpb.esa.project.scrum.model.Project;
@@ -18,19 +17,25 @@ public class ProjectDao {
 	}
 	
 	public void save(Project project) {
-		Transaction tx = this.session.beginTransaction();
-		this.session.save(project);
+		Transaction tx = session.beginTransaction();
+		session.save(project);
+		tx.commit();
+	}
+	
+	public void update(Project project) {
+		Transaction tx = session.beginTransaction();
+		session.update(project);
+		tx.commit();
+	}
+
+	public void delete(Project project) {
+		Transaction tx = session.beginTransaction();
+		session.delete(project);
 		tx.commit();
 	}
 
 	public Project load(Long id) {
-		return (Project) session.createCriteria(Project.class).add(Restrictions.eq("id", id)).uniqueResult();
-	}
-
-	public void delete(Project project) {
-		Transaction tx = this.session.beginTransaction();
-		this.session.delete(project);
-		tx.commit();
+		return (Project) session.load(Project.class, id);
 	}
 	
 	public List<Project> listAll() {

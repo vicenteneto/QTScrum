@@ -7,21 +7,18 @@ import br.ufpb.esa.project.scrum.model.User;
 @Component
 @SessionScoped
 public class UserSession {
-	private User logged;
+    private User user;
 
-	public Long getId() {
-		return logged.getId();
-	}
-	public String getName() {
-		return logged.getName();
-	}
-	public void login(User user) {
-		this.logged = user;
-	}
-	public boolean isLogged() {
-		return logged != null;
-	}
-	public void logout() {
-		this.logged = null;
-	}
+    public boolean isLogged() {
+        return user != null;
+    }
+    public void logout() {
+        user = null;
+    }
+    public void login(User user) {
+    	this.user = user;
+    }
+    public User getUser() {
+    	return user;
+    }
 }

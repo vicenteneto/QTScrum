@@ -4,34 +4,38 @@ import java.util.List;
 
 import org.hibernate.Session;
 import org.hibernate.Transaction;
-import org.hibernate.criterion.Restrictions;
 
 import br.com.caelum.vraptor.ioc.Component;
-import br.ufpb.esa.project.scrum.model.Project;
 import br.ufpb.esa.project.scrum.model.Task;
 
 @Component
 public class TaskDao {
-private final Session session;
+	private final Session session;
 	
 	public TaskDao(Session session) {
 		this.session = session;
 	}
 	
 	public void save(Task task) {
-		Transaction tx = this.session.beginTransaction();
-		this.session.save(task);
+		Transaction tx = session.beginTransaction();
+		session.save(task);
+		tx.commit();
+	}
+
+	public void update(Task task) {
+		Transaction tx = session.beginTransaction();
+		session.update(task);
+		tx.commit();
+	}
+	
+	public void delete(Task task) {
+		Transaction tx = session.beginTransaction();
+		session.delete(task);
 		tx.commit();
 	}
 
 	public Task load(Long id) {
-		return (Task) session.createCriteria(Task.class).add(Restrictions.eq("id", id)).uniqueResult();
-	}
-
-	public void delete(Task task) {
-		Transaction tx = this.session.beginTransaction();
-		this.session.delete(task);
-		tx.commit();
+		return (Task) session.load(Task.class, id);
 	}
 
 	public List<Task> listAll() {
