@@ -1,6 +1,7 @@
 package br.ufpb.esa.project.scrum.controllers;
 
-import static br.com.caelum.vraptor.view.Results.json;
+import java.io.File;
+import java.util.List;
 
 import org.hibernate.exception.ConstraintViolationException;
 
@@ -8,6 +9,7 @@ import br.com.caelum.vraptor.Get;
 import br.com.caelum.vraptor.Post;
 import br.com.caelum.vraptor.Resource;
 import br.com.caelum.vraptor.Result;
+import br.com.caelum.vraptor.view.Results;
 import br.ufpb.esa.project.scrum.annotations.Limited;
 import br.ufpb.esa.project.scrum.components.UserSession;
 import br.ufpb.esa.project.scrum.jdbc.dao.ProjectDao;
@@ -68,8 +70,20 @@ public class UsersController {
 		result.redirectTo(LoginController.class).logout();
 	}
 	
+	@Get("/users/photo")
+	@Limited
+	public String getPhoto() {
+		File file = new File("/br.ufpb.esa.project.scrum/img/user/" + userSession.getUser().getLogin()+ ".jpg");
+		if(file.exists())
+			return "/br.ufpb.esa.project.scrum/img/user/" + userSession.getUser().getLogin()+ ".jpg";
+		return "/br.ufpb.esa.project.scrum/img/user/no-photo.png";
+	}
+	
 	@Get("/users/search.json")
-	public void search(String login) {
-		result.use(json()).from(uDao.search(login)).exclude("id", "name", "email", "password", "projects").serialize();
+	@Limited
+	public void search() {
+		List<User> users = uDao.listAll();
+		users.remove(userSession.getUser());
+		result.use(Results.json()).withoutRoot().from(users).serialize();
 	}
 }

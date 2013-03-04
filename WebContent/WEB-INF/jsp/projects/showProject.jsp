@@ -9,15 +9,6 @@
 <link type="text/css" rel="stylesheet" href="/br.ufpb.esa.project.scrum/css/bootstrap.css">
 <link type="text/css" rel="stylesheet" href="/br.ufpb.esa.project.scrum/css/bootstrap-responsive.css">
 <link type="text/css" rel="stylesheet" href="/br.ufpb.esa.project.scrum/css/style.css">
-<style>
-	#ulToDo, #ulDoing, #ulDone {
-		background: #eee;
-		padding: 5px;
-	}
-	#uhu {
-		background: red;
-	}
-</style>
 <script type="text/javascript" src="/br.ufpb.esa.project.scrum/js/jquery-1.9.1.js"></script>
 <script type="text/javascript" src="/br.ufpb.esa.project.scrum/js/bootstrap.js"></script>
 <script type="text/javascript" src="/br.ufpb.esa.project.scrum/js/plugins/jquery-ui-1.10.1.custom.js"></script>
@@ -54,7 +45,18 @@
         	$('#editTaskId').val($(this).data('task'));
         	$('#editDescription').val($(this).data('description'));
         });
-    });
+        
+        var users = [];
+        
+        $.getJSON("${pageContext.request.contextPath}/users/search.json", function(json){
+			$.each(eval(json), function(i, item){
+				var jsonItem = eval(item);
+				users.push(jsonItem.login);
+			});
+		});
+        
+        $("#login").data("source", users);
+	 });
 </script>
 </head>
 
@@ -307,7 +309,7 @@
 					<div class="control-group">
 						<label class="control-label" for="login">Login</label>
 						<div class="controls">
-							<input class="input-xlarge" type="text" name="login" id="login"/>
+							<input class="input-xlarge" type="text" name="login" id="login" style="margin: 0 auto;" data-provide="typeahead" data-items="4" data-source='["Alabama","Alaska"]'>
 							<br /><br /><br /><br /><br />
 						</div>
 					</div>

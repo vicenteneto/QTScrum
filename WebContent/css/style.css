@@ -60,7 +60,7 @@ tfoot {
 }
 
 .white {
-	background:white;
+	background: white;
 }
 
 #conteudo {
@@ -82,4 +82,9 @@ tfoot {
 	margin: -240px 0 0 -320px;
 	position: absolute;
 	top: 50%;
+}
+
+#ulToDo,#ulDoing,#ulDone {
+	background: #eee;
+	padding: 5px;
 }
