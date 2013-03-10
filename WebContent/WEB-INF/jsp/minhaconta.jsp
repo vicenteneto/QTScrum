@@ -10,31 +10,31 @@
 				<div class="control-group">
 					<label class="control-label" for="userName">Nome</label>
 					<div class="controls">
-						<input class="input-xlarge" type="text" name="user.name" id="userName" value="${userSession.user.name}"/>
+						<input class="input-xlarge" maxlength="100" type="text" name="user.name" id="userName" value="${userSession.user.name}"/>
 					</div>
 				</div>
 				<div class="control-group">
 					<label class="control-label" for="userEmail">E-mail</label>
 					<div class="controls">
-						<input class="input-xlarge required" type="text" name="user.email" id="userEmail" value="${userSession.user.email}"/>
+						<input class="input-xlarge required" minlength="3" maxlength="100" email="true" type="text" name="user.email" id="userEmail" value="${userSession.user.email}"/>
 					</div>
 				</div>
 				<div class="control-group">
 					<label class="control-label" for="userLogin">Login</label>
 					<div class="controls">
-						<input class="input-xlarge required" type="text" name="user.login" id="userLogin" value="${userSession.user.login}"/>
+						<input class="input-xlarge required" minlength="3" maxlength="10" type="text" name="user.login" id="userLogin" value="${userSession.user.login}"/>
 					</div>
 				</div>
 				<div class="control-group">
 					<label class="control-label" for="userPassword">Senha Atual</label>
 					<div class="controls">
-						<input class="input-xlarge required" type="password" name="passwordAtual" id="passwordAtual" />
+						<input class="input-xlarge required" minlength="3" maxlength="10" type="password" name="passwordAtual" id="passwordAtual" />
 					</div>
 				</div>
 				<div class="control-group">
 					<label class="control-label" for="confirmacao">Nova Senha</label>
 					<div class="controls">
-						<input class="input-xlarge required" type="password" name="user.password" id="userPassword" />
+						<input class="input-xlarge required" minlength="3" maxlength="10" type="password" name="user.password" id="userPassword" />
 					</div>
 				</div>
 			</div>
@@ -46,3 +46,9 @@
 		</fieldset>
 	</form>
 </div>
+
+<script>
+	$('#minhaConta').on('shown', function () {
+	    $('input:text:visible:first', this).focus();
+	});
+</script>

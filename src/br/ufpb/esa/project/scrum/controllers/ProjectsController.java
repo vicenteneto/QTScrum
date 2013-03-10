@@ -7,10 +7,10 @@ import br.com.caelum.vraptor.Post;
 import br.com.caelum.vraptor.Resource;
 import br.com.caelum.vraptor.Result;
 import br.ufpb.esa.project.scrum.annotations.Limited;
-import br.ufpb.esa.project.scrum.components.UserSession;
 import br.ufpb.esa.project.scrum.jdbc.dao.ProjectDao;
 import br.ufpb.esa.project.scrum.jdbc.dao.UserDao;
 import br.ufpb.esa.project.scrum.model.Project;
+import br.ufpb.esa.project.scrum.model.Sprint;
 import br.ufpb.esa.project.scrum.model.User;
 
 @Resource
@@ -18,10 +18,8 @@ public class ProjectsController {
 	private final Result result;
 	private final ProjectDao pDao;
 	private final UserDao uDao;
-	private UserSession userSession;
 
-	public ProjectsController(UserSession userSession, ProjectDao pDao, UserDao uDao, Result result) {
-		this.userSession = userSession;
+	public ProjectsController(ProjectDao pDao, UserDao uDao, Result result) {
 		this.pDao = pDao;
 		this.uDao = uDao;
 		this.result = result;
@@ -30,9 +28,22 @@ public class ProjectsController {
 	@Post("/users/{userSessionId}/projects")
 	@Limited
 	public void save(Long userSessionId, Project project) {
+		Sprint sprint = new Sprint();
+		sprint.setName("Sprint 1");
+		sprint.setProject(project);
+		project.getSprints().add(sprint);
 		uDao.load(userSessionId).getProjects().add(project);
 		pDao.save(project);
 		result.redirectTo(this).list(userSessionId, uDao.load(userSessionId).getProjects());
+	}
+	
+	@Post("/users/{userSessionId}/projects/edit")
+	public void edit(Long userSessionId, Long projectId, Project project) {
+		Project p = pDao.load(projectId);
+		p.setName(project.getName());
+		pDao.update(p);
+		
+		result.redirectTo(ProjectsController.class).list(userSessionId, uDao.load(userSessionId).getProjects());
 	}
 	
 	@Get("/users/{userSessionId}/projects/delete/{projectId}")
@@ -40,7 +51,7 @@ public class ProjectsController {
 	public void delete(Long userSessionId, Long projectId) {
 		Project project = pDao.load(projectId);
 		
-		project.getTasks().removeAll(project.getTasks());
+		project.getSprints().removeAll(project.getSprints());
 		
 		project = pDao.load(projectId);
 		project.getParticipants().removeAll(project.getParticipants());
@@ -49,10 +60,11 @@ public class ProjectsController {
 		result.redirectTo(this).list(userSessionId, uDao.load(userSessionId).getProjects());
 	}
 	
-	@Get("/users/{userSessionId}/projects/{projectId}")
+	@Get("/users/{userSessionId}/projects/{projectId}/sprints/{index}")
 	@Limited
-	public Project showProject(Long projectId) {
-		return pDao.load(projectId);
+	public void showProject(Long projectId, int index) {
+		result.include("i", index);
+		result.include("project", pDao.load(projectId));
 	}
 
 	@Get("/users/{userSessionId}/projects/{projectId}/addparticipant")
@@ -74,7 +86,7 @@ public class ProjectsController {
 				uDao.update(user);
 			}
 		
-		result.redirectTo(this).showProject(projectId);
+		result.redirectTo(this).showProject(projectId, 1);
 	}
 	
 	@Get("/users/{userSessionId}/projects")

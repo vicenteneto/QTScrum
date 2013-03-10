@@ -7,33 +7,28 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
 import org.hibernate.annotations.Cascade;
 
 @Entity
-public class Project {
+public class Sprint {
 	@Id
 	@GeneratedValue
 	private Long id;
-	
+
 	@Column(nullable=false, length=100)
 	private String name;
 	
-	@ManyToMany
+	@ManyToOne
 	@Cascade(org.hibernate.annotations.CascadeType.SAVE_UPDATE)
-	@JoinTable(name="User_Project",
-		joinColumns={@JoinColumn(name="project_id")},
-		inverseJoinColumns={@JoinColumn(name="user_id")})
-	private List<User> participants = new ArrayList<User>();
+	private Project project;
 	
-	@OneToMany(mappedBy="project")
+	@OneToMany(mappedBy="sprint")
 	@Cascade(org.hibernate.annotations.CascadeType.SAVE_UPDATE)
-	private List<Sprint> sprints = new ArrayList<Sprint>();
-	
+	private List<Task> tasks = new ArrayList<Task>();
+
 	public Long getId() {
 		return id;
 	}
@@ -46,16 +41,16 @@ public class Project {
 	public void setName(String name) {
 		this.name = name;
 	}
-	public List<User> getParticipants() {
-		return participants;
+	public Project getProject() {
+		return project;
 	}
-	public void setParticipants(List<User> participants) {
-		this.participants = participants;
+	public void setProject(Project project) {
+		this.project = project;
 	}
-	public List<Sprint> getSprints() {
-		return sprints;
+	public List<Task> getTasks() {
+		return tasks;
 	}
-	public void setSprints(List<Sprint> sprints) {
-		this.sprints = sprints;
+	public void setTasks(List<Task> tasks) {
+		this.tasks = tasks;
 	}
 }

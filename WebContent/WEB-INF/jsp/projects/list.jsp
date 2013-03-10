@@ -14,44 +14,24 @@
 <script type="text/javascript" src="/br.ufpb.esa.project.scrum/js/plugins/jquery.validate.js"></script>
 <script type="text/javascript">
     $(function(){
-        $('#formNovoProjeto').validate({
-            rules:{
-                "projeto.nome": {
-                    required: true,
-                    minlength: 3
-                }
-            }
+        $('#novoProjeto').on('shown', function () {
+	        $('input:text:visible:first', this).focus();
+	    });
+        
+        var foto = document.getElementById('foto');
+
+        foto.style.cursor = 'pointer';
+        foto.onclick = function() {
+            $('#uploadFoto').modal('show');
+        };
+        
+        $('.linkEditProject').click(function () {
+        	$('#editProjectName').val($(this).data('name'));
+        	$('#editProjectId').val($(this).data('id'));
         });
         
-        $('#formAdicionarParticipante').validate({
-            rules:{
-                "login": {
-                    required: true,
-                    minlength: 3
-                }
-            }
-        });
-        
-        $('#formMinhaConta').validate({
-	        rules:{
-	            "userEmail": {
-	                required: true,
-	                email: true,
-	                minlength: 3
-	            },
-	            "userLogin":{
-	                required: true,
-	                minlength: 3
-	            },
-	            "passwordAtual": {
-	                required: true,
-	                minlength: 3
-	            },
-	            "userPassword": {
-	                required: true,
-	                minlength: 3
-	            }
-	        }
+        $('#uploadFoto').on('shown', function () {
+	        $('input:file:visible:first', this).focus();
 	    });
     });
 </script>
@@ -77,11 +57,12 @@
 									<c:forEach items="${projectList}" var="projeto">
 										<li class="active dropdown">
 											<a class="dropdown-toggle" data-toggle="dropdown" href="#">
-												${projeto.name} <span class="caret"></span>
+												<span class="caret"></span> ${projeto.name}
 											</a>
 											<ul class="dropdown-menu">
-												<li><a href="<c:url value='/users/${userSession.user.id}/projects/${projeto.id}'/>"><i class="icon-list"></i> Ver Projeto</a></li>
+												<li><a href="<c:url value='/users/${userSession.user.id}/projects/${projeto.id}/sprints/0'/>"><i class="icon-list"></i> Ver Projeto</a></li>
 												<li class="divider"></li>
+												<li><a class="linkEditProject" data-id="${projeto.id}" data-name="${projeto.name}" href="#alterarProjeto" role="button" data-toggle="modal"><i class="icon-edit"></i> Editar</a></li>
 												<li><a href="<c:url value='/users/${userSession.user.id}/projects/delete/${projeto.id}'/>"><i class="icon-trash"></i> Excluir</a></li>
 											</ul>
 										</li>
@@ -95,7 +76,7 @@
 			<div class="span3 thumbnail" align="center">
 				<div class="well white">
 					<legend>Perfil</legend>
-					<img class="img-rounded thumbnail" src="<c:url value='/img/user/no-photo.png'/>" alt="no-photo" />
+					<img id="foto" class="img-rounded thumbnail" src="${pageContext.request.contextPath}/users/${userSession.user.id}/imagem" alt="no-photo" />
 					<br />
 					<strong>${userSession.user.name}</strong>
 					<br /> <br />
@@ -121,12 +102,55 @@
 				<div class="modal-body control-group">
 					<label class="control-label" for="name">Nome</label>
 					<div class="controls">
-						<input id="name" class="input-xlarge" type="text" name="project.name" maxlength="100" />
+						<input id="name" class="input-xlarge required" minlength="3" maxlength="100" type="text" name="project.name" maxlength="100" />
 					</div>
 				</div>
 				<div class="modal-footer">
 					<button class="btn btn-primary"><i class="icon-ok icon-white"></i> Criar</button>
-					<button class="btn btn-danger" data-dismiss="modal" aria-hidden="true"><i class="icon-remove icon-white"></i> Close</button>
+					<button class="btn btn-danger" data-dismiss="modal" aria-hidden="true"><i class="icon-remove icon-white"></i> Fechar</button>
+				</div>
+			</fieldset>
+		</form>
+	</div>
+	
+	<!-- Alterar Projeto -->
+	<div id="alterarProjeto" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="alterarProjetoLabel" aria-hidden="true">
+		<div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+			<h3 id="alterarProjetoLabel">Editar Projeto</h3>
+  		</div>
+  		<form class="form-horizontal" id="formEditProject" action='<c:url value="/users/${userSession.user.id}/projects/edit" />' method="post">
+			<fieldset>
+				<div class="modal-body">
+					<label class="control-label" for="editDescription">Nome:</label>
+					<div class="controls">
+						<input class="input-xlarge required" type="text" id="editProjectName" name="project.name" maxlength="100" />
+					</div>
+				</div>
+				
+				<div class="modal-footer">
+					<input id="editProjectId" type="hidden" name="projectId" />
+					<button class="btn" data-dismiss="modal" aria-hidden="true">Fechar</button>
+					<button class="btn btn-primary" type="submit">Atualizar</button>
+				</div>
+			</fieldset>
+		</form>
+	</div>
+	
+	<!-- Upload Foto -->
+	<div id="uploadFoto" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="uploadFotoLabel" aria-hidden="true">
+		<div class="modal-header">
+			<button class="close" type="button" data-dismiss="modal" aria-hidden="true">×</button>
+			<h3 id="uploadFotoLabel">Alterar Foto</h3>
+  		</div>
+  		<form id="formUploadFoto" class="form-horizontal" action="${pageContext.request.contextPath}/users/${userSession.user.id}/imagem" method="post" enctype="multipart/form-data">
+			<fieldset>
+				<div align="center" class="modal-body">
+					<input type="file" name="imagem" />
+				</div>
+				<div class="modal-footer">
+					<button class="btn btn-primary"><i class="icon-upload icon-white"></i> Upload</button>
+					<button class="btn btn-danger" data-dismiss="modal" aria-hidden="true"><i class="icon-remove icon-white"></i> Fechar</button>
 				</div>
 			</fieldset>
 		</form>

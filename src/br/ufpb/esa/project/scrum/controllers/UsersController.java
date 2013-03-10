@@ -1,6 +1,5 @@
 package br.ufpb.esa.project.scrum.controllers;
 
-import java.io.File;
 import java.util.List;
 
 import org.hibernate.exception.ConstraintViolationException;
@@ -12,8 +11,6 @@ import br.com.caelum.vraptor.Result;
 import br.com.caelum.vraptor.view.Results;
 import br.ufpb.esa.project.scrum.annotations.Limited;
 import br.ufpb.esa.project.scrum.components.UserSession;
-import br.ufpb.esa.project.scrum.jdbc.dao.ProjectDao;
-import br.ufpb.esa.project.scrum.jdbc.dao.TaskDao;
 import br.ufpb.esa.project.scrum.jdbc.dao.UserDao;
 import br.ufpb.esa.project.scrum.model.User;
 
@@ -21,15 +18,11 @@ import br.ufpb.esa.project.scrum.model.User;
 public class UsersController {
 	private final UserDao uDao;
 	private final Result result;
-	private final ProjectDao pDao;
-	private final TaskDao tDao;
 	private UserSession userSession;
 	
-	public UsersController(UserSession userSession, UserDao uDao, ProjectDao pDao, TaskDao tDao, Result result) {
+	public UsersController(UserSession userSession, UserDao uDao, Result result) {
 		this.userSession = userSession;
 		this.uDao = uDao;
-		this.pDao = pDao;
-		this.tDao = tDao;
 		this.result = result;
 	}
 	
@@ -68,15 +61,6 @@ public class UsersController {
 		
 		uDao.delete(logged);
 		result.redirectTo(LoginController.class).logout();
-	}
-	
-	@Get("/users/photo")
-	@Limited
-	public String getPhoto() {
-		File file = new File("/br.ufpb.esa.project.scrum/img/user/" + userSession.getUser().getLogin()+ ".jpg");
-		if(file.exists())
-			return "/br.ufpb.esa.project.scrum/img/user/" + userSession.getUser().getLogin()+ ".jpg";
-		return "/br.ufpb.esa.project.scrum/img/user/no-photo.png";
 	}
 	
 	@Get("/users/search.json")

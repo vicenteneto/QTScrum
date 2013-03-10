@@ -50,6 +50,10 @@
 	            }
 	        }
 	    });
+	    
+	    $('#newUser').on('shown', function () {
+	        $('input:text:visible:first', this).focus();
+	    });
 	});
 </script>
 </head>

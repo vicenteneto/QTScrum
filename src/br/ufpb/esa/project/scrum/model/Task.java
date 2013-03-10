@@ -24,7 +24,7 @@ public class Task {
 	
 	@ManyToOne
 	@Cascade(org.hibernate.annotations.CascadeType.SAVE_UPDATE)
-	private Project project;
+	private Sprint sprint;
 	
 	@ManyToOne
 	@Cascade(org.hibernate.annotations.CascadeType.SAVE_UPDATE)
@@ -48,11 +48,11 @@ public class Task {
 	public void setStatus(Status status) {
 		this.status = status;
 	}
-	public Project getProject() {
-		return project;
+	public Sprint getSprint() {
+		return sprint;
 	}
-	public void setProject(Project project) {
-		this.project = project;
+	public void setSprint(Sprint sprint) {
+		this.sprint = sprint;
 	}
 	public User getResponsible() {
 		return responsible;

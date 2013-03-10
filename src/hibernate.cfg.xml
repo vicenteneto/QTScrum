@@ -25,6 +25,7 @@
 		<!--     ENTIDADES     -->
 		<mapping class="br.ufpb.esa.project.scrum.model.User" />
 		<mapping class="br.ufpb.esa.project.scrum.model.Project" />
+		<mapping class="br.ufpb.esa.project.scrum.model.Sprint" />
 		<mapping class="br.ufpb.esa.project.scrum.model.Task" />
 	</session-factory>
 </hibernate-configuration>

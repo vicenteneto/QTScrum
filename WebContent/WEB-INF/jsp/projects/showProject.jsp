@@ -31,19 +31,15 @@
 	      	}
 		});
     	$("#ulToDo, #ulToDo li, #ulDoing, #ulDoing li, #ulDone, #ulDone li").disableSelection();
-
-        $('#formNewTask').validate({
-            rules:{
-                "task.description": {
-                    required: true,
-                    minlength: 3
-                }
-            }
-        });
         
         $('.linkEditTask').click(function () {
         	$('#editTaskId').val($(this).data('task'));
         	$('#editDescription').val($(this).data('description'));
+        });
+        
+        $('.linkSprint').click(function () {
+        	$('#sprintIndex').val($(this).data('index'));
+        	$('#sprintForm').submit();
         });
         
         var users = [];
@@ -71,16 +67,34 @@
 						<a href="#tab1" data-toggle="tab"><i class="icon-tasks"></i> DashBoard</a>
 					</li>
 					<li>
-						<a href="#tab2" data-toggle="tab"><i class="icon-refresh"></i> Sprints</a>
-					</li>
-					<li>
-						<a href="#tab3" data-toggle="tab"><i class="icon-user"></i> Colaboradores</a>
+						<a href="#tab2" data-toggle="tab"><i class="icon-user"></i> Colaboradores</a>
 					</li>
 				</ul>
 				
 				<div class="tab-content">
 					<div class="tab-pane active" id="tab1">
-						<legend>${project.name}</legend>
+						<legend>${project.name} - ${project.sprints[i].name}</legend>
+						<div class="row-fluid">
+							<div class="span12">
+								<div class="btn-group">
+									<a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
+										Sprints
+										<span class="caret"></span>
+									</a>
+									<ul class="dropdown-menu">
+										<c:forEach items="${project.sprints}" var="sprint" varStatus="status">
+											<li>
+												<a href="<c:url value='/users/${userSession.user.id}/projects/${project.id}/sprints/${status.count-1}'/>">
+													<i class="icon-tasks"></i> ${sprint.name}
+												</a>
+											</li>
+										</c:forEach>
+									</ul>
+								</div>
+								<a class="btn btn-info" href='<c:url value="/projects/${project.id}/sprints/${i}" />'><i class="icon-plus icon-white"></i> Nova Sprint</a>
+							</div>
+						</div>
+						<br/>
 						<div class="row-fluid">
 							<div class="span4 ">
 								<div class="thumbnail" style="background:#F8F8F8;">
@@ -88,7 +102,7 @@
 									
 									<div class="well white">
 										<ul id="ulToDo" class="nav nav-pills nav-stacked droptrue">
-											<c:forEach items="${project.tasks}" var="task">
+											<c:forEach items="${project.sprints[i].tasks}" var="task">
 												<c:if test="${task.status == 'TODO'}">
 													<li class="active dropdown" data-id="${task.id}">
 														<a class="dropdown-toggle" data-toggle="dropdown" href="#">
@@ -123,7 +137,7 @@
 											</c:forEach>
 										</ul>
 									</div>
-									<a class="linkAddTask" href="#adicionarTarefaToDo" data-toggle="modal" data-status="todo"><i class="icon-plus-sign"></i> Adicionar Tarefa...</a>
+									<a class="linkAddTask" href="#adicionarTarefa" data-toggle="modal"><i class="icon-plus-sign"></i> Adicionar Tarefa...</a>
 								</div>
 							</div>
 
@@ -133,7 +147,7 @@
 									
 									<div class="well white">
 										<ul id="ulDoing" class="nav nav-pills nav-stacked droptrue">
-											<c:forEach items="${project.tasks}" var="task">
+											<c:forEach items="${project.sprints[i].tasks}" var="task">
 												<c:if test="${task.status == 'DOING'}">
 													<li class="active dropdown" data-id="${task.id}">
 														<a class="dropdown-toggle" data-toggle="dropdown" href="#">
@@ -167,8 +181,7 @@
 												</c:if>
 											</c:forEach>
 										</ul>
-									</div>
-									<a href="#adicionarTarefaDoing" role="button" data-toggle="modal" data-status="doing"><i class="icon-plus-sign"></i> Adicionar Tarefa...</a>
+									</div>									
 								</div>
 							</div>
 
@@ -178,7 +191,7 @@
 									
 									<div class="well white">
 										<ul id="ulDone" class="nav nav-pills nav-stacked droptrue">
-											<c:forEach items="${project.tasks}" var="task">
+											<c:forEach items="${project.sprints[i].tasks}" var="task">
 												<c:if test="${task.status == 'DONE'}">
 													<li class="active dropdown" data-id="${task.id}">
 														<a class="dropdown-toggle" data-toggle="dropdown" href="#">
@@ -213,16 +226,12 @@
 											</c:forEach>
 										</ul>
 									</div>
-									<a href="#adicionarTarefaDone" role="button" data-toggle="modal" data-status="done"><i class="icon-plus-sign"></i> Adicionar Tarefa...</a>
 								</div>
 							</div>
 						</div>
 						<br/>
 					</div>
 					<div class="tab-pane" id="tab2">
-						<p>Panel 2</p>
-					</div>
-					<div class="tab-pane" id="tab3">
 						<legend>${project.name}</legend>
 						<div class="row-fluid">
 							<div class="offset2 span8">
@@ -265,7 +274,28 @@
 		</div>
 	</div>
 	
-	<%@include file="../addtarefa.jsp" %>
+	<!-- Adicionar Tarefa -->
+	<div id="adicionarTarefa" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="adicionarTarefaToDoLabel" aria-hidden="true">
+		<div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+			<h3 id="adicionarTarefaToDoLabel">Adicionar Tarefa</h3>
+	 		</div>
+	 		<form class="form-horizontal" id="formNewTask" action='<c:url value="/projects/${project.id}/sprints/${i}/tasks" />' method="post">
+			<fieldset>
+				<div class="modal-body">
+					<label class="control-label" for="description">Descrição:</label>
+					<div class="controls">
+						<textarea class="span3" id="description" name="task.description" maxlength="255">${task.description}</textarea>
+					</div>
+				</div>
+				
+				<div class="modal-footer">
+					<button class="btn btn-primary" type="submit"><i class="icon-ok icon-white"></i> Adicionar</button>
+					<button class="btn btn-danger" data-dismiss="modal" aria-hidden="true"><i class="icon-remove icon-white"></i> Fechar</button>
+				</div>
+			</fieldset>
+		</form>
+	</div>
 	
 	<!-- Alterar Tarefa -->
 	<div id="alterarTarefa" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="alterarTarefaLabel" aria-hidden="true">
@@ -292,9 +322,14 @@
 	</div>
 	
 	<!-- Altera Status Form -->
-	<form id="changeTaskForm" action='<c:url value="/projects/${project.id}/tasks/moveto" />' method="post">
+	<form id="changeTaskForm" action='<c:url value="/projects/${project.id}/sprints/${i}/tasks/moveto" />' method="post">
 		<input id="changeTaskId" type="hidden" name="taskId" />
 		<input id="changeTaskStatus" type="hidden" name="taskStatus" />
+	</form>
+	
+	<!-- Altera Sprint Form -->
+	<form id="sprintForm" action='<c:url value="/users/${userSession.user.id}/projects/${projeto.id}/sprints" />' method="get">
+		<input id="sprintIndex" type="hidden" name="index" />
 	</form>
 	
 	<!-- Adicionar Participante -->
@@ -310,14 +345,14 @@
 						<label class="control-label" for="login">Login</label>
 						<div class="controls">
 							<input class="input-xlarge" type="text" name="login" id="login" style="margin: 0 auto;" data-provide="typeahead" data-items="4" data-source='["Alabama","Alaska"]'>
-							<br /><br /><br /><br /><br />
+							<br /><br /><br /><br />
 						</div>
 					</div>
 				</div>
 				<p/>
 				<div class="modal-footer">
-					<button class="btn" data-dismiss="modal" aria-hidden="true">Fechar</button>
-					<button class="btn btn-primary" type="submit">Adicionar</button>
+					<button class="btn btn-primary" type="submit"><i class="icon-plus icon-white"></i> Adicionar</button>
+					<button class="btn btn-danger" data-dismiss="modal" aria-hidden="true"><i class="icon-remove icon-white"></i> Fechar</button>
 				</div>
 			</fieldset>
 		</form>
