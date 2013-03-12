@@ -9,6 +9,21 @@
 <link type="text/css" rel="stylesheet" href="/br.ufpb.esa.project.scrum/css/bootstrap.css">
 <link type="text/css" rel="stylesheet" href="/br.ufpb.esa.project.scrum/css/bootstrap-responsive.css">
 <link type="text/css" rel="stylesheet" href="/br.ufpb.esa.project.scrum/css/style.css">
+<style>
+.navbar-search {
+    position: relative;
+    width: 200px;
+}
+.navbar-search .search-query {
+    padding-left: 29px !important;
+}
+.navbar-search .icon-search {
+    position: absolute;
+    top: 7px;
+    left: 11px;
+    background-image: url("http://twitter.github.com/bootstrap/assets/img/glyphicons-halflings.png");
+}
+</style>
 <script type="text/javascript" src="/br.ufpb.esa.project.scrum/js/jquery-1.9.1.js"></script>
 <script type="text/javascript" src="/br.ufpb.esa.project.scrum/js/bootstrap.js"></script>
 <script type="text/javascript" src="/br.ufpb.esa.project.scrum/js/plugins/jquery-ui-1.10.1.custom.js"></script>
@@ -88,7 +103,7 @@
 					<div class="tab-pane active" id="tab1">
 						<legend>${project.name} - ${project.sprints[i].name}</legend>
 						<div class="row-fluid">
-							<div class="span12">
+							<div class="span7">
 								<div class="btn-group">
 									<a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
 										Sprints
@@ -105,6 +120,40 @@
 									</ul>
 								</div>
 								<a class="btn btn-info" href='<c:url value="/projects/${project.id}/sprints/${i}" />'><i class="icon-plus icon-white"></i> Nova Sprint</a>
+								<form class="navbar-search pull-right" action='javascript:buscarTarefas();'>
+					                <input type="text" id="query" class="search-query" placeholder="Buscar Tarefas" />
+					                <input type="hidden" id="sprintId" value="${project.sprints[i].id}" />
+					                <div class="icon-search"></div>
+						        </form>
+						        <script type="text/javascript">
+						        	function buscarTarefas() {
+						        		$('#modalBuscarTarefas').modal('show');
+						        		var tasks = [];
+						        		$.getJSON("${pageContext.request.contextPath}/sprints/"+ $('#sprintId').val() + "/tasks/search.json", function(json){
+											$.each(eval(json), function(i, item){
+												var jsonItem = eval(item);
+												if(jsonItem.description.contains($('#query').val())) {
+													tasks.push(jsonItem);
+												}
+											});
+										}).then(function() {
+											var bodySearch = $('#bodySearch');
+											bodySearch.empty();
+											if(tasks.length == 0) {
+												bodySearch.append($('<td colspan="3">').html('Nenhuma tarefa encontrada'));
+											}
+											for (var i = 0; i < tasks.length; i++) {
+												var tr = $('<tr>');
+												bodySearch.append(tr);
+												tr.append($('<td>').html((i+1)));
+												tr.append($('<td>').html(tasks[i].description));
+												tr.append($('<td>').html(tasks[i].status));
+											}
+										});
+						        	}
+						        </script>
+							</div>
+							<div class="span5">
 								<a class="visualizarBurndown btn btn-info pull-right" href="#visualizarBurndown" role="button" data-toggle="modal" data-sprintid="${project.sprints[i].id}" data-data="${dataCriacao}">
 									Visualizar Burndown
 								</a>
@@ -435,6 +484,27 @@
 		    		chart.draw(data, null);
 		    	}
 			</script>
+		</div>
+	</div>
+	
+	<div id="modalBuscarTarefas" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="modalBuscarTarefasLabel" aria-hidden="true">
+		<div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+			<h3 id="modalBuscarTarefasLabel">Burndown - ${project.sprints[i].name}</h3>
+  		</div>
+		<div class="modal-body">
+			<table class="table">
+				<thead>
+					<tr>
+						<th>#</th>
+						<th>Descrição</th>
+						<th>Status</th>
+					</tr>
+				</thead>
+				<tbody id="bodySearch">
+					
+				</tbody>
+			</table>
 		</div>
 		<div class="modal-footer">
 			<button class="btn btn-danger" data-dismiss="modal" aria-hidden="true"><i class="icon-remove icon-white"></i> Fechar</button>
