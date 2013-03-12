@@ -1,5 +1,7 @@
 package br.ufpb.esa.project.scrum.controllers;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.List;
 
 import br.com.caelum.vraptor.Get;
@@ -30,6 +32,7 @@ public class ProjectsController {
 	public void save(Long userSessionId, Project project) {
 		Sprint sprint = new Sprint();
 		sprint.setName("Sprint 1");
+		sprint.setDataCriacao(Calendar.getInstance	());
 		sprint.setProject(project);
 		project.getSprints().add(sprint);
 		uDao.load(userSessionId).getProjects().add(project);
@@ -64,6 +67,8 @@ public class ProjectsController {
 	@Limited
 	public void showProject(Long projectId, int index) {
 		result.include("i", index);
+		Calendar data = pDao.load(projectId).getSprints().get(index).getDataCriacao();
+		result.include("dataCriacao", new SimpleDateFormat("MM/dd/yyyy").format(data.getTime()));
 		result.include("project", pDao.load(projectId));
 	}
 

@@ -13,6 +13,7 @@
 <script type="text/javascript" src="/br.ufpb.esa.project.scrum/js/bootstrap.js"></script>
 <script type="text/javascript" src="/br.ufpb.esa.project.scrum/js/plugins/jquery-ui-1.10.1.custom.js"></script>
 <script type="text/javascript" src="/br.ufpb.esa.project.scrum/js/plugins/jquery.validate.js"></script>
+<script type="text/javascript" src="/br.ufpb.esa.project.scrum/js/plugins/jsapi.js"></script>
 <script type="text/javascript">
     $(function(){
     	$("ul.droptrue").sortable({
@@ -52,7 +53,19 @@
 		});
         
         $("#login").data("source", users);
-	 });
+        
+        $('#adicionarTarefa').on('shown', function () {
+	        $('textarea:visible:first', this).focus();
+	    });
+        
+        $('#alterarTarefa').on('shown', function () {
+	        $('textarea:visible:first', this).focus();
+	    });
+        
+        $('#adicionarParticipante').on('shown', function () {
+	        $('input:text:visible:first', this).focus();
+		});
+	});
 </script>
 </head>
 
@@ -92,6 +105,9 @@
 									</ul>
 								</div>
 								<a class="btn btn-info" href='<c:url value="/projects/${project.id}/sprints/${i}" />'><i class="icon-plus icon-white"></i> Nova Sprint</a>
+								<a class="visualizarBurndown btn btn-info pull-right" href="#visualizarBurndown" role="button" data-toggle="modal" data-sprintid="${project.sprints[i].id}" data-data="${dataCriacao}">
+									Visualizar Burndown
+								</a>
 							</div>
 						</div>
 						<br/>
@@ -230,6 +246,7 @@
 							</div>
 						</div>
 						<br/>
+						<br/>
 					</div>
 					<div class="tab-pane" id="tab2">
 						<legend>${project.name}</legend>
@@ -263,6 +280,8 @@
 								</div>
 							</div>
 						</div>
+						<br/>
+						<br/>
 					</div>
 				</div>
 				
@@ -314,8 +333,8 @@
 				
 				<div class="modal-footer">
 					<input id="editTaskId" type="hidden" name="taskId" />
-					<button class="btn" data-dismiss="modal" aria-hidden="true">Fechar</button>
-					<button class="btn btn-primary" type="submit">Atualizar</button>
+					<button class="btn btn-primary" type="submit"><i class="icon-ok icon-white"></i> Atualizar</button>
+					<button class="btn btn-danger" data-dismiss="modal" aria-hidden="true"><i class="icon-remove icon-white"></i> Fechar</button>
 				</div>
 			</fieldset>
 		</form>
@@ -345,17 +364,81 @@
 						<label class="control-label" for="login">Login</label>
 						<div class="controls">
 							<input class="input-xlarge" type="text" name="login" id="login" style="margin: 0 auto;" data-provide="typeahead" data-items="4" data-source='["Alabama","Alaska"]'>
-							<br /><br /><br /><br />
+							<br /><br /><br />
 						</div>
 					</div>
 				</div>
-				<p/>
 				<div class="modal-footer">
 					<button class="btn btn-primary" type="submit"><i class="icon-plus icon-white"></i> Adicionar</button>
 					<button class="btn btn-danger" data-dismiss="modal" aria-hidden="true"><i class="icon-remove icon-white"></i> Fechar</button>
 				</div>
 			</fieldset>
 		</form>
+	</div>
+	
+	<!-- Visualizar Burndown -->
+	<div id="visualizarBurndown" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="visualizarBurndownLabel" aria-hidden="true">
+		<div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+			<h3 id="visualizarBurndownLabel">Burndown - ${project.sprints[i].name}</h3>
+  		</div>
+		<div class="modal-body">
+			<div id="chart_div">
+				
+			</div>
+			<script type="text/javascript">
+		    	google.load('visualization', '1', {packages: ['imagelinechart']});
+		    	
+		    	var chart = null;
+		    	function drawVisualization() {
+		        	// Create and draw the visualization.
+					chart = new google.visualization.ImageLineChart(document.getElementById('chart_div'));
+				}
+		    	
+		    	google.setOnLoadCallback(drawVisualization);
+
+		    	$('.visualizarBurndown').click(function() {
+		    		var dataCriacao = new Date($(this).data('data'));
+		    		var tasks = [];
+			    	$.getJSON("${pageContext.request.contextPath}/sprints/"+ $(this).data('sprintid') + "/tasks/search.json", function(json){
+						$.each(eval(json), function(i, item){
+							var jsonItem = eval(item);
+							tasks.push(jsonItem);
+						});
+					}).then(function() {
+						desenhar(dataCriacao, tasks);
+					});
+		    	});
+		    	
+		    	function desenhar(dataCriacao, tasks) {
+		    		var diff = (dataCriacao.getDate() - new Date().getDate()) * -1;
+
+		    		var dados = [['Data', 'Curva Ideal', '']];
+		    		var valor2 = tasks.length;
+		    		
+		    		for (var i = diff; i >= 0; i--) {
+		    			var legenda = (dataCriacao.getDate()) + '/' + (dataCriacao.getMonth() + 1) + '/' + dataCriacao.getFullYear();
+		    			var valor1 = (tasks.length/diff) * i;
+		    			
+		    			for (var j = 0; j < tasks.length; j++) {
+		    				if(new Date(tasks[j].done).getTime() == dataCriacao.getTime()) {
+		    					valor2--;
+		    				}
+						}
+		    			
+		    			dados.push([legenda, valor1, valor2]);
+		    			dataCriacao.setDate(dataCriacao.getDate() + 1);
+					}
+		    		// Create and populate the data table.
+		        	var data = google.visualization.arrayToDataTable(dados);
+		    		
+		    		chart.draw(data, null);
+		    	}
+			</script>
+		</div>
+		<div class="modal-footer">
+			<button class="btn btn-danger" data-dismiss="modal" aria-hidden="true"><i class="icon-remove icon-white"></i> Fechar</button>
+		</div>
 	</div>
 	
 	<%@include file="../minhaconta.jsp" %>

@@ -3,6 +3,7 @@ package br.ufpb.esa.project.scrum.controllers;
 import br.com.caelum.vraptor.Get;
 import br.com.caelum.vraptor.Resource;
 import br.com.caelum.vraptor.Result;
+import br.com.caelum.vraptor.view.Results;
 import br.ufpb.esa.project.scrum.annotations.Limited;
 import br.ufpb.esa.project.scrum.jdbc.dao.ProjectDao;
 import br.ufpb.esa.project.scrum.jdbc.dao.SprintDao;
@@ -35,5 +36,11 @@ public class SprintsController {
 	@Limited
 	public void alteraSprint(Long userSessionId, Long projectId, int index) {
 		result.redirectTo(ProjectsController.class).showProject(projectId, index);
+	}
+	
+	@Get("/sprints/{sprintId}/tasks/search.json")
+	@Limited
+	public void search(Long sprintId) {
+		result.use(Results.json()).withoutRoot().from(sDao.load(sprintId).getTasks()).serialize();
 	}
 }

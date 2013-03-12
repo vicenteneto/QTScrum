@@ -1,5 +1,8 @@
 package br.ufpb.esa.project.scrum.controllers;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+
 import br.com.caelum.vraptor.Path;
 import br.com.caelum.vraptor.Post;
 import br.com.caelum.vraptor.Resource;
@@ -51,12 +54,16 @@ public class TasksController {
 	@Post("/projects/{projectId}/sprints/{index}/tasks/moveto")
 	public void changeStatus(Long projectId, int index, Long taskId, String taskStatus) {
 		Task t = tDao.load(taskId);
-		if(taskStatus.equalsIgnoreCase("todo"))
+		if(taskStatus.equalsIgnoreCase("todo")) {
 			t.setStatus(Status.TODO);
-		else if(taskStatus.equalsIgnoreCase("doing"))
+			t.setDone("");
+		} else if(taskStatus.equalsIgnoreCase("doing")) {
 			t.setStatus(Status.DOING);
-		else if(taskStatus.equalsIgnoreCase("done"))
+			t.setDone("");
+		} else if(taskStatus.equalsIgnoreCase("done")) {
 			t.setStatus(Status.DONE);
+			t.setDone(new SimpleDateFormat("MM/dd/yyyy").format(Calendar.getInstance().getTime()));
+		}
 		
 		tDao.update(t);
 		result.redirectTo(ProjectsController.class).showProject(projectId, index);

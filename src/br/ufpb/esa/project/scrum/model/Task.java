@@ -30,6 +30,8 @@ public class Task {
 	@Cascade(org.hibernate.annotations.CascadeType.SAVE_UPDATE)
 	private User responsible;
 	
+	private String done;
+	
 	public Long getId() {
 		return id;
 	}
@@ -59,5 +61,11 @@ public class Task {
 	}
 	public void setResponsible(User responsible) {
 		this.responsible = responsible;
+	}
+	public String getDone() {
+		return done;
+	}
+	public void setDone(String done) {
+		this.done = done;
 	}
 }

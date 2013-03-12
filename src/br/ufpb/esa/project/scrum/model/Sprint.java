@@ -1,6 +1,7 @@
 package br.ufpb.esa.project.scrum.model;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -9,6 +10,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import org.hibernate.annotations.Cascade;
 
@@ -20,6 +23,10 @@ public class Sprint {
 
 	@Column(nullable=false, length=100)
 	private String name;
+	
+	@Column(nullable=false)
+	@Temporal(TemporalType.DATE)
+	private Calendar dataCriacao;
 	
 	@ManyToOne
 	@Cascade(org.hibernate.annotations.CascadeType.SAVE_UPDATE)
@@ -40,6 +47,12 @@ public class Sprint {
 	}
 	public void setName(String name) {
 		this.name = name;
+	}
+	public Calendar getDataCriacao() {
+		return dataCriacao;
+	}
+	public void setDataCriacao(Calendar dataCriacao) {
+		this.dataCriacao = dataCriacao;
 	}
 	public Project getProject() {
 		return project;

@@ -130,8 +130,8 @@
 				
 				<div class="modal-footer">
 					<input id="editProjectId" type="hidden" name="projectId" />
-					<button class="btn" data-dismiss="modal" aria-hidden="true">Fechar</button>
-					<button class="btn btn-primary" type="submit">Atualizar</button>
+					<button class="btn btn-primary" type="submit"><i class="icon-ok icon-white"></i> Atualizar</button>
+					<button class="btn btn-danger" data-dismiss="modal" aria-hidden="true"><i class="icon-remove icon-white"></i> Fechar</button>
 				</div>
 			</fieldset>
 		</form>
