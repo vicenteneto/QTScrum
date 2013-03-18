@@ -171,16 +171,16 @@
 												<c:if test="${task.status == 'TODO'}">
 													<li class="active dropdown" data-id="${task.id}">
 														<a class="dropdown-toggle" data-toggle="dropdown" href="#">
+															<span class="caret"></span>
 															${task.description}
 															<c:if test="${not empty task.responsible}">
 																(${task.responsible.name})
 															</c:if>
-															<span class="caret"></span>
 														</a>
 														<ul class="dropdown-menu">
 															<c:if test="${empty task.responsible}">
 																<li>
-																	<a href='<c:url value="/projects/${project.id}/tasks/${task.id}/responsible/${userSession.user.id}"/>'>
+																	<a href='<c:url value="/projects/${project.id}/sprints/${i}/tasks/${task.id}/responsible/${userSession.user.id}"/>'>
 																		<i class="icon-user"></i> Aceitar Responsabilidade
 																	</a>
 																</li>
@@ -192,7 +192,7 @@
 															</li>
 															<li class="divider"></li>
 															<li>
-																<a href="<c:url value='/projects/${project.id}/tasks/delete/${task.id}'/>">
+																<a href="<c:url value='/projects/${project.id}/sprints/${i}/tasks/delete/${task.id}'/>">
 																	<i class="icon-trash"></i> Delete
 																</a>
 															</li>
@@ -216,11 +216,11 @@
 												<c:if test="${task.status == 'DOING'}">
 													<li class="active dropdown" data-id="${task.id}">
 														<a class="dropdown-toggle" data-toggle="dropdown" href="#">
+															<span class="caret"></span>
 															${task.description}
 															<c:if test="${not empty task.responsible}">
 																(${task.responsible.name})
 															</c:if>
-															<span class="caret"></span>
 														</a>
 														<ul class="dropdown-menu">
 															<c:if test="${empty task.responsible}">
@@ -260,11 +260,11 @@
 												<c:if test="${task.status == 'DONE'}">
 													<li class="active dropdown" data-id="${task.id}">
 														<a class="dropdown-toggle" data-toggle="dropdown" href="#">
+															<span class="caret"></span>
 															${task.description}
 															<c:if test="${not empty task.responsible}">
 																(${task.responsible.name})
 															</c:if>
-															<span class="caret"></span>
 														</a>
 														<ul class="dropdown-menu">
 															<c:if test="${empty task.responsible}">
@@ -371,7 +371,7 @@
 			<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
 			<h3 id="alterarTarefaLabel">Editar Tarefa</h3>
   		</div>
-  		<form class="form-horizontal" id="formEditTask" action='<c:url value="/projects/${project.id}/tasks/edit" />' method="post">
+  		<form class="form-horizontal" id="formEditTask" action='<c:url value="/projects/${project.id}/sprints/${i}/tasks/edit" />' method="post">
 			<fieldset>
 				<div class="modal-body">
 					<label class="control-label" for="editDescription">Descrição:</label>
@@ -464,9 +464,13 @@
 
 		    		var dados = [['Data', 'Curva Ideal', '']];
 		    		var valor2 = tasks.length;
-		    		
+		    		var cont = 0;
 		    		for (var i = diff; i >= 0; i--) {
-		    			var legenda = (dataCriacao.getDate()) + '/' + (dataCriacao.getMonth() + 1) + '/' + dataCriacao.getFullYear();
+		    			var legenda = '';
+
+		    			if(i%3==0)
+		    				legenda = (dataCriacao.getDate()) + '/' + (dataCriacao.getMonth() + 1) + '/' + (dataCriacao.getFullYear());
+		    			
 		    			var valor1 = (tasks.length/diff) * i;
 		    			
 		    			for (var j = 0; j < tasks.length; j++) {

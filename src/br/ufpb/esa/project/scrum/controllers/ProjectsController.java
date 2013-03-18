@@ -91,7 +91,7 @@ public class ProjectsController {
 				uDao.update(user);
 			}
 		
-		result.redirectTo(this).showProject(projectId, 1);
+		result.redirectTo(this).showProject(projectId, 0);
 	}
 	
 	@Get("/users/{userSessionId}/projects")

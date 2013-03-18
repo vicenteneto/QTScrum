@@ -10,7 +10,7 @@
 			6esncj4m
 		</property>
 		<property name="hibernate.connection.url">
-			jdbc:mysql://127.0.0.1/scrum
+			jdbc:mysql://127.0.0.1/scrum?charSet=LATIN1
 		</property>
 		<property name="hibernate.connection.driver_class">
 			com.mysql.jdbc.Driver

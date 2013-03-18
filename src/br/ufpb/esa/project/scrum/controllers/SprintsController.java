@@ -1,5 +1,7 @@
 package br.ufpb.esa.project.scrum.controllers;
 
+import java.util.Calendar;
+
 import br.com.caelum.vraptor.Get;
 import br.com.caelum.vraptor.Resource;
 import br.com.caelum.vraptor.Result;
@@ -26,6 +28,7 @@ public class SprintsController {
 	public void save(Long projectId, int index) {
 		Sprint sprint = new Sprint();
 		sprint.setName("Sprint " + (pDao.load(projectId).getSprints().size() + 1));
+		sprint.setDataCriacao(Calendar.getInstance());
 		sprint.setProject(pDao.load(projectId));
 		pDao.load(projectId).getSprints().add(sprint);
 		sDao.save(sprint);
