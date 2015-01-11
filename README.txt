@@ -1,10 +1,5 @@
-Quadro de Tarefas do Scrum
+# Quadro de Tarefas do Scrum
 
-Equipe:
-	Adailton Cazé
-	Diego Nascimento
-	Gabriela Pimenta
-	Giordania Giselle
-	Heitor Carrazzoni
-	Patrícia Santos
-	Vicente Neto
+'''
+Projeto desenvolvido para a disciplina de Engenharia de Software Aplicada do curso de Sistemas de InformaÃ§Ã£o da Universidade Federal da ParaÃ­ba.
+'''
